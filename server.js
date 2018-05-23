@@ -32,37 +32,48 @@ mongoose.connect("mongodb://localhost/mongoScraper");
 // });
 
 app.get("/scrape/", function(req, res) {
-  request("https://www.axios.com/", function(error, response, html) {
-    //send the request body to cheerio
-    var $ = cheerio.load(html);
+  setTimeout(function() {
+    request(
+      "https://www.axios.com/",
+      function(error, response, html) {
+        if (!error) {
+          //send the request body to cheerio
+          var $ = cheerio.load(html);
 
-    $(".story-card").each(function(i, element) {
-      // grab title and link of article
-      var title = $(element)
-        .find("h3")
-        .text();
-      var body = $(element)
-        .find("p")
-        .text();
-      //   title.addClass("href", link);
-      console.log(title);
-
-      // send those things to the db w/ Articles model
-      db.Articles.create(
-        {
-          title: title,
-          body: body
-        },
-        function(err, inserted) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log(inserted);
-          }
+          $("article").each(function(i, element) {
+            //   console.log("---------------");
+            //   console.log(element);
+            // grab title and link of article
+            var title = $(element)
+              .find("h3")
+              .text();
+            var wholeBody = $(element)
+              .find("p")
+              .text();
+            //   title.addClass("href", link);
+            console.log(title);
+            var bodyLength = 200;
+            var body = wholeBody.substring(0, bodyLength) + "...";
+            // send those things to the db w/ Articles model
+            db.Articles.insertMany(
+              {
+                title: title,
+                body: body
+              },
+              function(err, inserted) {
+                if (err) {
+                  console.log(err);
+                } else {
+                  console.log(inserted);
+                }
+              }
+            );
+          });
+          res.send("Scrape Complete!");
         }
-      );
-    });
-    res.send("Scrape Complete!");
+      },
+      3000
+    );
   });
 });
 

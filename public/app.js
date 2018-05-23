@@ -10,6 +10,7 @@ $.getJSON("/scrape/", function(data) {
 });
 
 $(document).on("click", ".article-scraper", function() {
+  $(".articles-well").empty();
   $.ajax({
     method: "GET",
     url: "/articles/"
