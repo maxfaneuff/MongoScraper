@@ -30,6 +30,11 @@
                         <button type="button" class="btn btn-danger btn-lg article-scraper">Scrape New</button>
                     </p>
                 </li>
+                <li>
+                    <p>
+                        <button type="button" class="btn btn-danger btn-lg article-clean">Empty Articles</button>
+                    </p>
+                </li>
             </ul>
         </div>
     </nav>
@@ -47,9 +52,25 @@
 
     </div>
 
+    <!-- modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h3 class="text-center" id="dbArticle"></h3 class="text-center">
+                    <h5 class="text-center">Click outside this Modal to dismiss</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- bootstrap js -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+<!-- my js -->
 <script src="./app.js"></script>
 
 </html>

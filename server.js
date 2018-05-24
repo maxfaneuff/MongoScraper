@@ -31,6 +31,17 @@ mongoose.connect("mongodb://localhost/mongoScraper");
 //   res.send("Hello World!");
 // });
 
+// to clear the database
+app.delete("/remove/", function(req, res) {
+  db.Articles.remove({})
+    .then(function(stuff) {
+      res.send("Fresh database");
+    })
+    .catch(function(error) {
+      return res.json(error);
+    });
+});
+
 app.get("/scrape/", function(req, res) {
   setTimeout(function() {
     request(
@@ -43,31 +54,27 @@ app.get("/scrape/", function(req, res) {
           $("article").each(function(i, element) {
             //   console.log("---------------");
             //   console.log(element);
+            var result = {};
             // grab title and link of article
-            var title = $(element)
+            result.title = $(this)
               .find("h3")
               .text();
-            var wholeBody = $(element)
+            wholeBody = $(this)
               .find("p")
               .text();
             //   title.addClass("href", link);
-            console.log(title);
+            // console.log(title);
             var bodyLength = 200;
-            var body = wholeBody.substring(0, bodyLength) + "...";
+            result.body = wholeBody.substring(0, bodyLength) + "...";
+
             // send those things to the db w/ Articles model
-            db.Articles.insertMany(
-              {
-                title: title,
-                body: body
-              },
-              function(err, inserted) {
-                if (err) {
-                  console.log(err);
-                } else {
-                  console.log(inserted);
-                }
-              }
-            );
+            db.Articles.create(result)
+              .then(function(dbArticle) {
+                console.log(dbArticle);
+              })
+              .catch(function(error) {
+                return res.json(error);
+              });
           });
           res.send("Scrape Complete!");
         }
