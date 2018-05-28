@@ -43,45 +43,93 @@ app.delete("/remove/", function(req, res) {
 });
 
 app.get("/scrape/", function(req, res) {
-  setTimeout(function() {
-    request(
-      "https://www.axios.com/",
-      function(error, response, html) {
-        if (!error) {
-          //send the request body to cheerio
-          var $ = cheerio.load(html);
+  request("https://www.axios.com/", function(error, response, html) {
+    if (!error) {
+      //send the request body to cheerio
+      var $ = cheerio.load(html);
 
-          $("article").each(function(i, element) {
-            //   console.log("---------------");
-            //   console.log(element);
-            var result = {};
-            // grab title and link of article
-            result.title = $(this)
-              .find("h3")
-              .text();
-            wholeBody = $(this)
-              .find("p")
-              .text();
-            //   title.addClass("href", link);
-            // console.log(title);
-            var bodyLength = 200;
-            result.body = wholeBody.substring(0, bodyLength) + "...";
-
-            // send those things to the db w/ Articles model
-            db.Articles.create(result)
-              .then(function(dbArticle) {
-                console.log(dbArticle);
-              })
-              .catch(function(error) {
-                return res.json(error);
-              });
+      $("article").each(function(i, element) {
+        //   console.log("---------------");
+        //   console.log(element);
+        var result = {};
+        //a boolean value for whether or not an article is saved
+        result.isSaved = false;
+        // grab title of headline
+        result.title = $(this)
+          .find("h3")
+          .text();
+        // grab whole body of article text
+        wholeBody = $(this)
+          .find("p")
+          .text();
+        // grab image link
+        result.headlineImg = $(this)
+          .find("figure")
+          .children()
+          .find("img")
+          .attr("data-src");
+        result.altImg = $(this)
+          .find("figure")
+          .children()
+          .find("img")
+          .attr("src");
+        //   title.addClass("href", link);
+        // console.log(title);
+        var bodyLength = 200;
+        //Keep the length of the body of the article to just 200 characters
+        result.body = wholeBody.substring(0, bodyLength) + "...";
+        console.log(result);
+        // send those things to the db w/ Articles model
+        db.Articles.create(result)
+          .then(function(dbArticle) {
+            console.log(dbArticle);
+          })
+          .catch(function(error) {
+            return res.json(error);
           });
-          res.send("Scrape Complete!");
-        }
-      },
-      3000
-    );
+      });
+      res.send("Scrape Complete!");
+    }
   });
+});
+
+//a route to find an article by id, and set the isSaved value to true, so it'll appear in the Saved Articles list
+app.post("/articles/:id", function(req, res) {
+  db.Articles.findOneAndUpdate(
+    { _id: req.params.id },
+    { $set: { isSaved: true } }
+  )
+    .then(function(stuff) {
+      res.send("Article Saved!");
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+});
+
+//a route to find an article by _id, and set the isSaved value to false, so it won't appear in the Saved Articles list
+app.post("/saved/:id", function(req, res) {
+  db.Articles.findOneAndUpdate(
+    { _id: req.params.id },
+    { $set: { isSaved: false } }
+  )
+    .then(function(stuff) {
+      res.send("Article is No Longer Saved");
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+});
+
+app.get("/saved/", function(req, res) {
+  // find all articles where isSaved = true, set by clicking on the save article button
+  db.Articles.find({ isSaved: true })
+    .then(function(dbArticle) {
+      res.send(dbArticle);
+    })
+    .catch(function(error) {
+      res.json(error);
+    });
 });
 
 app.get("/articles", function(req, res) {
@@ -96,8 +144,6 @@ app.get("/articles", function(req, res) {
       res.json(err);
     });
 });
-
-app.post("/articles/:id", function(req, res) {});
 
 // Start the server
 app.listen(PORT, function() {

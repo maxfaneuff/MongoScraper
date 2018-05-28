@@ -13,6 +13,15 @@ var ArticleSchema = new Schema({
     required: true
   },
 
+  isSaved: {
+    type: Boolean
+  },
+  altImg: {
+    type: String
+  },
+  headlineImg: {
+    type: String
+  },
   note: {
     type: Schema.Types.ObjectId,
     ref: "Notes"
