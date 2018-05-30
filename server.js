@@ -145,6 +145,36 @@ app.get("/articles", function(req, res) {
     });
 });
 
+//a route to get the notes of an article
+app.get("/articles/:id", function(req, res) {
+  db.Articles.findOne({ _id: req.params.id })
+    .populate("note")
+    .then(function(dbArticle) {
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+});
+
+//a route to make a new note
+app.put("/articles/:id", function(req, res) {
+  console.log(req.params.id);
+  db.Notes.create(req.body)
+    .then(function(dbNote) {
+      return db.Articles.findOneAndUpdate(
+        { _id: req.params.id },
+        { note: dbNote._id },
+        { new: true }
+      );
+    })
+    .then(function(dbArticle) {
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+});
 // Start the server
 app.listen(PORT, function() {
   console.log("App running on port " + PORT + "!");

@@ -111,6 +111,52 @@ $(document).on("click", ".deleteBtn", function() {
   getSaved();
 });
 
+$(document).on("click", ".noteBtn", function() {
+  thisId = $(this).attr("data-id");
+  console.log(thisId);
+  $.ajax({
+    method: "GET",
+    url: "/articles/" + thisId
+  }).then(function(dbArticle) {
+    console.log(dbArticle);
+    $("#noteBody").empty();
+    $("#noteTitle").text("Note For:  " + dbArticle.title);
+    if (dbArticle.note !== undefined) {
+      var newWell = $('<div class="well">');
+      var noteText = $("<span>" + dbArticle.note.body + "</span>");
+      var delNote = '<button class="btn btn-danger note-delete">x</button>';
+      newWell.append(noteText);
+      newWell.append(delNote);
+      $("#noteBody").prepend(newWell);
+    }
+    $("#saveNote").attr("data-id", thisId);
+    $("#noteModal").modal({
+      show: true,
+      keyboard: true,
+      backdrop: true
+    });
+  });
+});
+
+//
+$(document).on("click", "#saveNote", function() {
+  var newNote = $("#noteForm")
+    .val()
+    .trim();
+  var thisId = $("#saveNote").attr("data-id");
+  console.log(newNote);
+  console.log(thisId);
+  $.ajax({
+    method: "PUT",
+    url: "/articles/" + thisId,
+    data: {
+      body: newNote
+    }
+  }).then(function(data) {
+    console.log(data);
+  });
+});
+
 function getScraped() {
   $.ajax({
     method: "GET",

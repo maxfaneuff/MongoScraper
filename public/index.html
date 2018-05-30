@@ -52,7 +52,7 @@
 
     </div>
 
-    <!-- modal -->
+    <!-- modal1 -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -60,6 +60,31 @@
                     <h3 class="text-center" id="dbArticle"></h3 class="text-center">
                     <h5 class="text-center">Click outside this Modal to dismiss</h5>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal2 -->
+    <div class="modal fade" id="noteModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="noteTitle">Add Note For ...</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="panel panel-default">
+                        <div class="panel-body" id="noteBody">
+                            Previous Notes
+                        </div>
+                    </div>
+                    <form>
+                        <div class="form-group">
+                            <label for="message-text" class="control-label">Add a Note:</label>
+                            <textarea class="form-control" id="noteForm" placeholder="Write a Note Here"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <button class="btn btn-success save" id="saveNote">Save Note</button>
             </div>
         </div>
     </div>
