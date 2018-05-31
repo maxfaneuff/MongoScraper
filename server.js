@@ -164,11 +164,12 @@ app.get("/articles/:id", function(req, res) {
 //a route to make a new note
 app.post("/articles/:id", function(req, res) {
   console.log(req.params.id);
+  console.log(req.body);
   db.Notes.create(req.body)
     .then(function(dbNote) {
       return db.Articles.findOneAndUpdate(
         { _id: req.params.id },
-        { note: dbNote._id },
+        { $push: { note: dbNote._id } },
         { new: true }
       );
     })

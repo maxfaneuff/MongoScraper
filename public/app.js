@@ -21,30 +21,6 @@ $(document).on("click", ".article-clean", function() {
   });
 });
 
-// $(document).on("click", ".article-scraper", function() {
-//   $(".articles-well").empty();
-//   $.ajax({
-//     method: "GET",
-//     url: "/articles/"
-//   }).then(function(dbArticle) {
-//     for (var i = 0; i < dbArticle.length; i++) {
-//       var newWell = $("<div class='panel panel-info'>");
-//       var newHeading = $("<div class='panel-heading'>");
-//       var newTitle = $("<h3 class='panel-title col-lg-10'>");
-//       var newBody = $("<div class='panel-body'>");
-//       var closeDiv = $("</div>");
-
-//       newTitle.text(dbArticle[i].title);
-//       newBody.text(dbArticle[i].body);
-//       newHeading.append(newTitle);
-//       newWell.append(newHeading);
-//       newWell.append(newBody);
-
-//       $(".articles-well").append(newWell);
-//     }
-//   });
-// });
-
 //a route to set isSaved to true when a save button is clicked on
 $(document).on("click", "#save", function() {
   var dataId = $(this).attr("data-id");
@@ -122,12 +98,14 @@ $(document).on("click", ".noteBtn", function() {
     $("#noteBody").empty();
     $("#noteTitle").text("Note For:  " + dbArticle.title);
     if (dbArticle.note !== undefined) {
-      var newWell = $('<div class="well">');
-      var noteText = $("<span>" + dbArticle.note.body + "</span>");
-      var delNote = '<button class="btn btn-danger note-delete">x</button>';
-      newWell.append(noteText);
-      newWell.append(delNote);
-      $("#noteBody").prepend(newWell);
+      for (var i = 0; i < dbArticle.note.length; i++) {
+        var newWell = $('<div class="well">');
+        var noteText = $("<span>" + dbArticle.note[i].body + "</span>");
+        var delNote = '<button class="btn btn-danger note-delete">x</button>';
+        newWell.append(noteText);
+        newWell.append(delNote);
+        $("#noteBody").prepend(newWell);
+      }
     }
     $("#saveNote").attr("data-id", thisId);
     $("#noteModal").modal({
@@ -155,6 +133,7 @@ $(document).on("click", "#saveNote", function() {
     }
   }).then(function(data) {
     console.log(data);
+    $("#noteModal").modal("hide");
   });
 });
 
@@ -170,12 +149,12 @@ function getScraped() {
       //a new heading for the title
       var newHeading = $("<div class='panel-heading'>");
       //where the title goes
-      var newTitle = $("<span class='panel-title'>");
+      var newTitle = $("<span class='panel-title col-lg-10'>");
       //where the article body goes
       var newBody = $("<div class='panel-body'>");
       // the save button
       var saveBtn = $(
-        '<button type="button" class="btn btn-danger" id="save">Save Article</button>'
+        '<button type="button" class="btn btn-danger col-lg-2" id="save">Save Article</button>'
       );
       var closeDiv = $("</div>");
       // the image for the article, w/ the src tag generated from the dbArticle info

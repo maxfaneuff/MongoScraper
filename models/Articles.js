@@ -22,10 +22,12 @@ var ArticleSchema = new Schema({
   headlineImg: {
     type: String
   },
-  note: {
-    type: Schema.Types.ObjectId,
-    ref: "Notes"
-  }
+  note: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Notes"
+    }
+  ]
 });
 
 var Articles = mongoose.model("Articles", ArticleSchema);
