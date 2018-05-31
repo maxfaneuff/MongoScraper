@@ -51,7 +51,7 @@ $(document).on("click", "#save", function() {
 
   console.log(dataId);
   $.ajax({
-    method: "POST",
+    method: "PUT",
     url: "/articles/" + dataId
   }).then(function(data) {
     $("#dbArticle").text(data);
@@ -147,10 +147,11 @@ $(document).on("click", "#saveNote", function() {
   console.log(newNote);
   console.log(thisId);
   $.ajax({
-    method: "PUT",
+    method: "POST",
     url: "/articles/" + thisId,
     data: {
-      body: newNote
+      body: newNote,
+      article: thisId
     }
   }).then(function(data) {
     console.log(data);
@@ -274,3 +275,9 @@ function getSaved() {
     // $(".articles-well").append(newWell);
   });
 }
+
+$("#noteModal").on("hidden.bs.modal", function() {
+  $(this)
+    .find("form")[0]
+    .reset();
+});

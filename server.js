@@ -94,7 +94,7 @@ app.get("/scrape/", function(req, res) {
 });
 
 //a route to find an article by id, and set the isSaved value to true, so it'll appear in the Saved Articles list
-app.post("/articles/:id", function(req, res) {
+app.put("/articles/:id", function(req, res) {
   db.Articles.findOneAndUpdate(
     { _id: req.params.id },
     { $set: { isSaved: true } }
@@ -147,8 +147,12 @@ app.get("/articles", function(req, res) {
 
 //a route to get the notes of an article
 app.get("/articles/:id", function(req, res) {
+  var thisId = req.params.id;
   db.Articles.findOne({ _id: req.params.id })
-    .populate("note")
+    .populate({
+      path: "note",
+      match: { article: { $eq: thisId } }
+    })
     .then(function(dbArticle) {
       res.json(dbArticle);
     })
@@ -158,7 +162,7 @@ app.get("/articles/:id", function(req, res) {
 });
 
 //a route to make a new note
-app.put("/articles/:id", function(req, res) {
+app.post("/articles/:id", function(req, res) {
   console.log(req.params.id);
   db.Notes.create(req.body)
     .then(function(dbNote) {
