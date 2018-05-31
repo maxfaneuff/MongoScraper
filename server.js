@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/mongoScraper");
+mongoose.connect(MONGODB_URI);
 
 // Routes
 // app.get("/", function(req, res) {
