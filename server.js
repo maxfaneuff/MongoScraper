@@ -29,9 +29,9 @@ app.use(express.static("public"));
 mongoose.connect(MONGODB_URI);
 
 // Routes
-// app.get("/", function(req, res) {
-//   res.send("Hello World!");
-// });
+app.get("/", function(req, res) {
+  res.send("Hello World!");
+});
 
 // to clear the database
 app.delete("/remove/", function(req, res) {
