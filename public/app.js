@@ -101,7 +101,10 @@ $(document).on("click", ".noteBtn", function() {
       for (var i = 0; i < dbArticle.note.length; i++) {
         var newWell = $('<div class="well">');
         var noteText = $("<span>" + dbArticle.note[i].body + "</span>");
-        var delNote = '<button class="btn btn-danger note-delete">x</button>';
+        var delNote =
+          '<button class="btn btn-danger note-delete" data-id="' +
+          dbArticle.note[i]._id +
+          '">x</button>';
         newWell.append(noteText);
         newWell.append(delNote);
         $("#noteBody").prepend(newWell);
@@ -116,7 +119,20 @@ $(document).on("click", ".noteBtn", function() {
   });
 });
 
-//
+//When the delete button is clicked, delete the note
+$(document).on("click", ".note-delete", function() {
+  var thisId = $(".note-delete").attr("data-id");
+  console.log(thisId);
+  $.ajax({
+    method: "POST",
+    url: "/notes/" + thisId
+  }).then(function(data) {
+    console.log(data);
+    $("#noteModal").modal("hide");
+  });
+});
+
+//When the save note button is clicked, save the note & hide the modal
 $(document).on("click", "#saveNote", function() {
   var newNote = $("#noteForm")
     .val()

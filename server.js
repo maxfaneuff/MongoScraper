@@ -181,6 +181,17 @@ app.post("/articles/:id", function(req, res) {
       res.json(err);
     });
 });
+
+app.post("/notes/:id", function(req, res) {
+  db.Notes.deleteOne({ _id: req.params.id })
+    .then(function(dbNote) {
+      console.log(dbNote);
+      res.json(dbNote);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+});
 // Start the server
 app.listen(PORT, function() {
   console.log("App running on port " + PORT + "!");
